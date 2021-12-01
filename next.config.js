@@ -1,9 +1,14 @@
 module.exports = {
   reactStrictMode: true,
   env: {
-    MONGODB_URI: "mongodb://localhost/next-pasal",
+    MONGODB_URI:
+      "mongodb+srv://next-pasal:jarhek-puztud-pykFu3@cluster0.6e6nx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     JWT_SECRET: "somethingsecret",
     PAYPAL_CLIENT_ID:
       "AdSG82yYNIWbKfIXOG6moUJURzkgPJ00USDKHuIeB67zwBQ9uE_V20J1X_BnBfm3qqx4H6AnTPqyWtJB",
+    CLOUDINARY_CLOUD_NAME: "next-pasal",
+    CLOUDINARY_API_KEY: "815374696912817",
+    CLOUDINARY_API_SECRET: "Ty2f3xOUa9WRS6sPeOCTGFIXykw",
   },
+  images: { domains: ["res.cloudinary.com"] },
 };
