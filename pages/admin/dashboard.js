@@ -23,6 +23,7 @@ import { Store } from "../../utils/Store";
 import useStyles from "../../utils/styles";
 import Layout from "../../components/Layout";
 
+
 function reducer(state, action) {
   switch (action.type) {
     case "FETCH_REQUEST":

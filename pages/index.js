@@ -6,7 +6,7 @@ import Product from "../models/Product";
 import db from "../utils/db";
 import { Store } from "../utils/Store";
 import axios from "axios";
-import ProductItem from "../components/ProductItems";
+import ProductItem from "../components/ProductItem";
 
 export default function Home({ products }) {
   const router = useRouter();
