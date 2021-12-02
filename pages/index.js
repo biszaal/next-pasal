@@ -1,22 +1,12 @@
 import { useContext } from "react";
-import {
-  Button,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Grid,
-  Typography,
-} from "@material-ui/core";
-import Rating from "@material-ui/lab/Rating";
-import NextLink from "next/link";
+import { Grid } from "@material-ui/core";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import Product from "../models/Product";
 import db from "../utils/db";
 import { Store } from "../utils/Store";
 import axios from "axios";
+import ProductItem from "../components/ProductItems";
 
 export default function Home({ products }) {
   const router = useRouter();
@@ -42,31 +32,10 @@ export default function Home({ products }) {
         <Grid container spacing={3}>
           {products.map((product) => (
             <Grid item md={4} key={product.name}>
-              <Card>
-                <NextLink href={`/product/${product.slug}`}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      image={product.image}
-                      title={product.name}
-                    />
-                    <CardContent>
-                      <Typography>{product.name}</Typography>
-                      <Rating value={product.rating} readOnly />
-                    </CardContent>
-                  </CardActionArea>
-                </NextLink>
-                <CardActions>
-                  <Typography>${product.price}</Typography>
-                  <Button
-                    size="small"
-                    color="primary"
-                    onClick={() => addToCartHandler(product)}
-                  >
-                    Add to cart
-                  </Button>
-                </CardActions>
-              </Card>
+              <ProductItem
+                product={product}
+                addToCartHandler={addToCartHandler}
+              />
             </Grid>
           ))}
         </Grid>

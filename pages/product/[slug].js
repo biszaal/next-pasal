@@ -38,6 +38,7 @@ const ProductScreen = ({ product }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
+  const [snackbarOn, setSnackbarOn] = useState("");
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -54,10 +55,12 @@ const ProductScreen = ({ product }) => {
         }
       );
       setLoading(false);
+      setSnackbarOn(true);
       setSuccessMessage("Review submitted successfully");
       fetchReviews();
     } catch (err) {
       setLoading(false);
+      setSnackbarOn(true);
       setErrorMessage(getError(err));
     }
   };
@@ -96,18 +99,16 @@ const ProductScreen = ({ product }) => {
     <Layout title={product.name} description={product.description}>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={Boolean(successMessage) || Boolean(errorMessage)}
+        open={snackbarOn}
         autoHideDuration={6000}
         onClose={() => {
-          setSuccessMessage("");
-          setErrorMessage("");
+          setSnackbarOn(false);
         }}
       >
         <Alert
           variant="filled"
           onClose={() => {
-            setSuccessMessage("");
-            setErrorMessage("");
+            setSnackbarOn(false);
           }}
           severity={successMessage ? "success" : "error"}
           sx={{ width: "100%" }}
