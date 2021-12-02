@@ -68,8 +68,16 @@ const Layout = ({ title, description, children, isLoading }) => {
     setAnchorEl(e.currentTarget);
   };
 
-  const loginMenuCloseHandler = () => {
+  const loginMenuCloseHandler = (e, redirect) => {
     setAnchorEl(null);
+    if (redirect === "backdropClick") {
+      router.push("/");
+      return;
+    }
+
+    if (redirect) {
+      router.push(redirect || "/");
+    }
   };
 
   const logoutClickHandler = () => {
