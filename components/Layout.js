@@ -68,11 +68,8 @@ const Layout = ({ title, description, children, isLoading }) => {
     setAnchorEl(e.currentTarget);
   };
 
-  const loginMenuCloseHandler = (e, redirect) => {
+  const loginMenuCloseHandler = () => {
     setAnchorEl(null);
-    if (redirect) {
-      router.push(redirect);
-    }
   };
 
   const logoutClickHandler = () => {
