@@ -15,13 +15,15 @@ import {
   Button,
   Menu,
   MenuItem,
+  Box,
+  LinearProgress,
 } from "@material-ui/core";
 import useStyles from "../utils/styles";
 import { Store } from "../utils/Store";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 
-const Layout = ({ title, description, children }) => {
+const Layout = ({ title, description, children, isLoading }) => {
   const { state, dispatch } = useContext(Store);
   const { darkMode, cart, userInfo } = state;
   const router = useRouter();
@@ -161,6 +163,11 @@ const Layout = ({ title, description, children }) => {
               )}
             </div>
           </Toolbar>
+          {isLoading && (
+            <Box className={classes.fullWidth}>
+              <LinearProgress color="primary" />
+            </Box>
+          )}
         </AppBar>
         <Container className={classes.main}>{children}</Container>
         <footer className={classes.footer}>

@@ -39,11 +39,14 @@ const Register = () => {
   }, []);
 
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async ({ name, email, password, confirmPassword }) => {
     setError("");
+    setIsLoading(true);
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
+      setIsLoading(false);
       return;
     }
     try {
@@ -54,14 +57,16 @@ const Register = () => {
       });
       dispatch({ type: "USER_LOGIN", payload: data });
       Cookies.set("userInfo", JSON.stringify(data));
+      setIsLoading(false);
       router.push(redirect || "/");
     } catch (err) {
       setError(getError(err));
+      setIsLoading(false);
     }
   };
 
   return (
-    <Layout title="Register">
+    <Layout title="Register" isLoading={isLoading}>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={Boolean(error)}

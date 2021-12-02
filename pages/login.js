@@ -33,6 +33,7 @@ const Login = () => {
   const { userInfo } = state;
 
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (userInfo) {
@@ -42,6 +43,7 @@ const Login = () => {
 
   const submitHandler = async ({ email, password }) => {
     setError("");
+    setIsLoading(true);
     try {
       const { data } = await axios.post("/api/users/login", {
         email,
@@ -49,14 +51,16 @@ const Login = () => {
       });
       dispatch({ type: "USER_LOGIN", payload: data });
       Cookies.set("userInfo", JSON.stringify(data));
+      setIsLoading(false);
       router.push(redirect || "/");
     } catch (err) {
       setError(getError(err));
+      setIsLoading(false);
     }
   };
 
   return (
-    <Layout title="Login">
+    <Layout title="Login" isLoading={isLoading}>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={Boolean(error)}

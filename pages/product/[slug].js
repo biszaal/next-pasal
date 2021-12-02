@@ -1,14 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NextLink from "next/link";
 import {
   Button,
   Card,
+  CircularProgress,
   Grid,
   Link,
   List,
   ListItem,
+  Snackbar,
+  TextField,
   Typography,
 } from "@material-ui/core";
+import { Rating, Alert } from "@material-ui/lab";
 
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -18,12 +22,57 @@ import Layout from "../../components/Layout";
 import Product from "../../models/Product";
 import db from "../../utils/db";
 import { Store } from "../../utils/Store";
+import { getError } from "../../utils/error";
 import axios from "axios";
 
 const ProductScreen = ({ product }) => {
   const { state, dispatch } = useContext(Store);
   const classes = useStyles();
   const router = useRouter();
+  const { userInfo } = state;
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios.post(
+        `/api/products/${product._id}/reviews`,
+        {
+          rating,
+          comment,
+        },
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      setLoading(false);
+      setSuccessMessage("Review submitted successfully");
+      fetchReviews();
+    } catch (err) {
+      setLoading(false);
+      setErrorMessage(getError(err));
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const { data } = await axios.get(`/api/products/${product._id}/reviews`);
+      setReviews(data);
+    } catch (err) {
+      setErrorMessage(getError(err));
+    }
+  };
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
   if (!product) {
     return <h1>Product not found</h1>;
@@ -45,6 +94,27 @@ const ProductScreen = ({ product }) => {
 
   return (
     <Layout title={product.name} description={product.description}>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={Boolean(successMessage) || Boolean(errorMessage)}
+        autoHideDuration={6000}
+        onClose={() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => {
+            setSuccessMessage("");
+            setErrorMessage("");
+          }}
+          severity={successMessage ? "success" : "error"}
+          sx={{ width: "100%" }}
+        >
+          {successMessage || errorMessage}
+        </Alert>
+      </Snackbar>
       <div className={classes.section}>
         <NextLink href="/" passHref>
           <Link>
@@ -76,10 +146,10 @@ const ProductScreen = ({ product }) => {
               <Typography>Brand: {product.brand}</Typography>
             </ListItem>
             <ListItem>
-              <Typography>
-                Rating: {product.rating} stars(
-                {product.numReviews} reviews)
-              </Typography>
+              <Rating value={product.rating} readOnly></Rating>
+              <Link href="#reviews">
+                <Typography>({product.numReviews} reviews)</Typography>
+              </Link>
             </ListItem>
             <ListItem>
               <Typography>Description: {product.description}</Typography>
@@ -125,6 +195,79 @@ const ProductScreen = ({ product }) => {
           </Card>
         </Grid>
       </Grid>
+      <List>
+        <ListItem>
+          <Typography name="reviews" id="reviews" variant="h2">
+            Customer Reviews
+          </Typography>
+        </ListItem>
+        {reviews.length === 0 && <ListItem>No review</ListItem>}
+        {reviews.map((review) => (
+          <ListItem key={review._id}>
+            <Grid container>
+              <Grid item className={classes.reviewItem}>
+                <Typography>
+                  <strong>{review.name}</strong>
+                </Typography>
+                <Typography>{review.createdAt.substring(0, 10)}</Typography>
+              </Grid>
+              <Grid item>
+                <Rating value={review.rating} readOnly></Rating>
+                <Typography>{review.comment}</Typography>
+              </Grid>
+            </Grid>
+          </ListItem>
+        ))}
+        <ListItem>
+          {userInfo ? (
+            <form onSubmit={submitHandler} className={classes.reviewForm}>
+              <List>
+                <ListItem>
+                  <Typography variant="h2">Leave your review</Typography>
+                </ListItem>
+                <ListItem>
+                  <TextField
+                    multiline
+                    variant="outlined"
+                    fullWidth
+                    name="review"
+                    label="Enter comment"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                </ListItem>
+                <ListItem>
+                  <Rating
+                    name="simple-controlled"
+                    value={rating}
+                    onChange={(e) => setRating(e.target.value)}
+                  />
+                </ListItem>
+                <ListItem>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                  >
+                    Submit
+                  </Button>
+
+                  {loading && <CircularProgress />}
+                </ListItem>
+              </List>
+            </form>
+          ) : (
+            <Typography variant="h2">
+              Please{" "}
+              <Link href={`/login?redirect=/product/${product.slug}`}>
+                login
+              </Link>{" "}
+              to write a review
+            </Typography>
+          )}
+        </ListItem>
+      </List>
     </Layout>
   );
 };
@@ -136,7 +279,7 @@ export const getServerSideProps = async (context) => {
   const { slug } = params;
 
   await db.connect();
-  const product = await Product.findOne({ slug }).lean();
+  const product = await Product.findOne({ slug }, "-reviews").lean();
   await db.disconnect();
   return {
     props: {
