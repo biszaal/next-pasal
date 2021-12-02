@@ -15,7 +15,8 @@ import {
   CardContent,
   CardActions,
 } from "@material-ui/core";
-// import { Bar } from "react-chartjs-2";
+import Chart from "chart.js/auto";
+import { Bar } from "react-chartjs-2";
 import { getError } from "../../utils/error";
 import { Store } from "../../utils/Store";
 import useStyles from "../../utils/styles";
@@ -179,7 +180,7 @@ function AdminDashboard() {
                 </Typography>
               </ListItem>
               <ListItem>
-                {/* <Bar
+                <Bar
                   data={{
                     labels: summary.salesData.map((x) => x._id),
                     datasets: [
@@ -193,7 +194,7 @@ function AdminDashboard() {
                   options={{
                     legend: { display: true, position: "right" },
                   }}
-                /> */}
+                />
               </ListItem>
             </List>
           </Card>
