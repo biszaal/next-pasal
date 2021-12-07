@@ -14,7 +14,7 @@ import Rating from "@material-ui/lab/Rating";
 export default function ProductItem({ product, addToCartHandler }) {
   return (
     <Card>
-      <NextLink href={`/product/${product.slug}`} passHref>
+      <NextLink href={`/product/${product.slug}`}>
         <CardActionArea>
           <CardMedia
             component="img"
