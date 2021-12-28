@@ -28,7 +28,7 @@ const Login = () => {
 
   const classes = useStyles();
   const router = useRouter();
-  const { redirect } = router.query; // login?redirect=/shipping
+  const { redirect } = router.query;
   const { state, dispatch } = useContext(Store);
   const { userInfo } = state;
 

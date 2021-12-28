@@ -70,7 +70,7 @@ const Layout = ({ title, description, children, isLoading }) => {
   });
   const classes = useStyles();
 
-  const [sidbarVisible, setSidebarVisible] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
   const sidebarOpenHandler = () => {
     setSidebarVisible(true);
   };
@@ -183,7 +183,7 @@ const Layout = ({ title, description, children, isLoading }) => {
             </Box>
             <Drawer
               anchor="left"
-              open={sidbarVisible}
+              open={sidebarVisible}
               onClose={sidebarCloseHandler}
             >
               <List>

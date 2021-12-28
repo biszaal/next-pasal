@@ -87,7 +87,7 @@ const Shipping = () => {
                   {...field}
                 />
               )}
-            ></Controller>
+            />
           </ListItem>
           <ListItem>
             <Controller
@@ -115,7 +115,7 @@ const Shipping = () => {
                   {...field}
                 />
               )}
-            ></Controller>
+            />
           </ListItem>
           <ListItem>
             <Controller
@@ -143,7 +143,7 @@ const Shipping = () => {
                   {...field}
                 />
               )}
-            ></Controller>
+            />
           </ListItem>
           <ListItem>
             <Controller
@@ -171,7 +171,7 @@ const Shipping = () => {
                   {...field}
                 />
               )}
-            ></Controller>
+            />
           </ListItem>
           <ListItem>
             <Controller
@@ -199,7 +199,7 @@ const Shipping = () => {
                   {...field}
                 />
               )}
-            ></Controller>
+            />
           </ListItem>
           <ListItem>
             <Button variant="contained" type="submit" fullWidth color="primary">
